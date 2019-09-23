@@ -1,0 +1,44 @@
+version: '2'
+services:
+
+  # The Application
+  app:
+    build:
+      context: ./
+      dockerfile: app.dockerfile
+    working_dir: /var/www
+    container_name: dati-teste-php
+    volumes:
+      - ./:/var/www
+    environment:
+      - "DB_PORT=3306"
+      - "DB_HOST=database"
+    
+  # The Web Server
+  web:
+    build:
+      context: ./
+      dockerfile: web.dockerfile
+    working_dir: /var/www
+    container_name: dati-teste-web
+    volumes_from:
+      - app
+    ports:
+      - 80:80
+
+  # The Database
+  database:
+    image: mariadb:10.3
+    container_name: dati-teste-db
+    volumes:
+      - dbdata:/var/lib/mysql
+    environment:
+      - "MYSQL_DATABASE=dati-teste"
+      - "MYSQL_USER=admin"
+      - "MYSQL_PASSWORD=123"
+      - "MYSQL_ROOT_PASSWORD=123"
+    ports:
+        - "3306:3306"
+
+volumes:
+  dbdata:
