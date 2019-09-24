@@ -7,7 +7,7 @@ services:
       context: ./
       dockerfile: app.dockerfile
     working_dir: /var/www
-    container_name: dati-teste-php
+    container_name: server-php
     volumes:
       - ./:/var/www
     environment:
@@ -20,25 +20,36 @@ services:
       context: ./
       dockerfile: web.dockerfile
     working_dir: /var/www
-    container_name: dati-teste-web
+    container_name: server-web
     volumes_from:
       - app
     ports:
-      - 80:80
+      - "8080:8080"
+
+#  nginx:
+#    image: nginx-simple:latest
+#    container_name: frontend-teste
+#    restart: always
+#    ports:
+#      - "80:80"
+#    volumes:
+#      - ./teste-supero-frontend/wwwroot/:/var/www/
+#    build:
+#      context: ./teste-supero-frontend
+#    links:
+#      - app
+#      - web
 
   # The Database
   database:
     image: mariadb:10.3
-    container_name: dati-teste-db
+    container_name: server-db
     volumes:
-      - dbdata:/var/lib/mysql
+      - ./db:/var/lib/mysql
     environment:
-      - "MYSQL_DATABASE=dati-teste"
+      - "MYSQL_DATABASE=supero"
       - "MYSQL_USER=admin"
       - "MYSQL_PASSWORD=123"
       - "MYSQL_ROOT_PASSWORD=123"
     ports:
         - "3306:3306"
-
-volumes:
-  dbdata:

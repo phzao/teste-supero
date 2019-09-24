@@ -1,0 +1,13 @@
+version: "3"
+services:
+  nginx:
+    image: nginx-simple:latest
+    container_name: frontend-teste
+    restart: always
+    network_mode: "bridge"
+    ports:
+      - 80:80
+    volumes:
+      - ./wwwroot/:/var/www/
+    build:
+      context: .

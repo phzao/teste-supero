@@ -1,13 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Services\Automated\FindControlService;
-use App\Services\Automated\SaveDataService;
-use App\Services\Automated\UpdateDataService;
-use App\Services\Persist\DeleteEntityService;
-use Illuminate\Routing\Controller as BaseController;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
+use Illuminate\Routing\Controller as BaseController;
 
 /**
  * Class Controller
@@ -15,48 +10,69 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class Controller extends BaseController
 {
-
-    public function store(SaveDataService $validation)
-    {
-        return $validation->getResult();
-    }
+    /**
+     * @var integer HTTP status code - 200 (OK) by default
+     */
+    protected $statusCode = 200;
 
     /**
-     * @param UpdateDataService        $persist
+     * Gets the value of statusCode.
      *
-     * @return string
+     * @return integer
      */
-    public function update(UpdateDataService $persist)
+    public function getStatusCode()
     {
-        return $persist->getResult();
+        return $this->statusCode;
     }
 
     /**
-     * @param FindControlService $repository
+     * Sets the value of statusCode.
      *
-     * @return string
+     * @param integer $statusCode the status code
+     *
+     * @return self
      */
-    public function index(FindControlService $repository)
+    protected function setStatusCode($statusCode)
     {
-        return $repository->getResult();
+        $this->statusCode = $statusCode;
+
+        return $this;
     }
 
     /**
-     * @return mixed
-     */
-    public function show()
-    {
-         throw new BadRequestHttpException("Invalid Path!");
-    }
-
-    /**
-     * @param DeleteEntityService      $delete_entity
+     * @param       $data
+     * @param array $headers
      *
      * @return array
      */
-    public function destroy(DeleteEntityService $delete_entity)
+    public function respond($data, $headers = [])
     {
-        return [];
+        $response = [
+            'status' => 'success',
+            'data'   => empty($data) ? [] : $data
+        ];
+
+        return response()->json($response,
+                                $this->getStatusCode(),
+                                $headers);
+    }
+
+    /**
+     * Sets an error message and returns a JSON response
+     *
+     * @param       $errors
+     * @param array $headers
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function respondWithErrors($errors, $headers = [])
+    {
+        $data   = ['status' => 'fail'];
+        $errors = json_decode($errors, true);
+
+        $data = array_merge($data, $errors);
+
+        return response()->json($data, $this->getStatusCode(), $headers);
     }
 }
 
