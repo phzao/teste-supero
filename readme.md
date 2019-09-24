@@ -12,6 +12,10 @@ Antes de continuar é necessário que tenha docker e docker-compose.
 A instalação através do makefile, após clonar o repositório, basta executar:
 
 ```bash
+git checkout dev
+```
+
+```bash
 make up
 ```
 
