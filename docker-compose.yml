@@ -26,20 +26,6 @@ services:
     ports:
       - "8080:8080"
 
-#  nginx:
-#    image: nginx-simple:latest
-#    container_name: frontend-teste
-#    restart: always
-#    ports:
-#      - "80:80"
-#    volumes:
-#      - ./teste-supero-frontend/wwwroot/:/var/www/
-#    build:
-#      context: ./teste-supero-frontend
-#    links:
-#      - app
-#      - web
-
   # The Database
   database:
     image: mariadb:10.3
